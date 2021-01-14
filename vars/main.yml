@@ -1,7 +1,6 @@
 ---
 install_python_packages:
   - 'FlexGet'
-  - 'functools32'       # for flexget
 create_files:
   - path:               '/var/lib/transmission-daemon/.flexget'
     state:              'directory'
