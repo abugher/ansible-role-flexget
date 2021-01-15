@@ -1,6 +1,7 @@
 ---
 install_python_packages:
-  - 'FlexGet'
+  - 'flexget'
+  - 'transmission-rpc'
 create_files:
   - path:               '/var/lib/transmission-daemon/.flexget'
     state:              'directory'
