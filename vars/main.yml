@@ -1,5 +1,11 @@
 ---
+install_packages:
+  - 'gcc'
+  - 'g++'
+  - 'libc6-dev'
+  - 'python3-dev'
 install_python_packages:
+  - 'wheel'
   - 'flexget'
   - 'transmission-rpc'
 create_files:
