@@ -101,3 +101,5 @@ install_files:
     src:                '../../../sensitive_ansible/roles/flexget/files/cron.d/flexget_failed_clear'
     dest:               '/etc/cron.d/flexget_failed_clear'
 
+  - 'transmission'
+  - 'python'

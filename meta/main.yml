@@ -1,6 +1,0 @@
----
-dependencies:
-  - role:       'transmission'
-    when:       skipdeps is not defined
-  - role:       'python'
-    when:       skipdeps is not defined
