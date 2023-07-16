@@ -8,9 +8,7 @@ install_packages:
   - 'libc6-dev'
   - 'python3-dev'
 install_python_packages:
-  - 'wheel'
   - 'flexget'
-  - 'transmission-rpc'
 create_files:
   - path:               '/var/lib/transmission-daemon/.flexget'
     state:              'directory'
