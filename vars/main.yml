@@ -9,6 +9,8 @@ install_packages:
   - 'python3-dev'
 install_python_packages:
   - 'flexget'
+  # https://github.com/Flexget/Flexget/issues/3847
+  - 'transmission-rpc<5.0.0'
 create_files:
   - path:               '/var/lib/transmission-daemon/.flexget'
     state:              'directory'
