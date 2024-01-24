@@ -8,7 +8,8 @@ install_packages:
   - 'libc6-dev'
   - 'python3-dev'
 install_python_packages:
-  - 'flexget'
+  # https://github.com/Flexget/Flexget/issues/3905#issuecomment-1871858428
+  - 'flexget<3.11'
   # https://github.com/Flexget/Flexget/issues/3847
   - 'transmission-rpc<5.0.0'
 create_files:
