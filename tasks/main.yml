@@ -1,6 +1,9 @@
 ---
 - include:              '../tasks/dependencies.yml'
-- include:              '../tasks/install_packages.yml'
+#- include:              '../tasks/install_packages.yml'
+# Workaround provided for bug:  https://github.com/Flexget/Flexget/issues/3905
+- include:              'tasks/pendulum-wheels.yml'
 - include:              '../tasks/install_python_packages.yml'
+- include:              '../tasks/symlinks.yml'
 - include:              '../tasks/create_files.yml'
 - include:              '../tasks/install_files.yml'

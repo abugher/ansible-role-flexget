@@ -1,0 +1,13 @@
+---
+- copy:
+    owner:              'root'
+    group:              'root'
+    mode:               '0644'
+    src:                'files/wheels/pendulum-3.0.0-py3-none-any.whl'
+    dest:               '/tmp/pendulum-3.0.0-py3-none-any.whl'
+    
+- name:                 'workaround - https://github.com/Flexget/Flexget/issues/3905'
+  pip:
+    name:               '/tmp/pendulum-3.0.0-py3-none-any.whl'
+    state:              'present'
+    virtualenv:         "/usr/local/python-packages/flexget"
