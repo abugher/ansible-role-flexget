@@ -15,6 +15,10 @@ symlinks:
     group:              'root'
     src:                '/usr/local/python-packages/flexget/bin/flexget'
     dest:               '/usr/local/bin/flexget'
+  - owner:              'root'
+    group:              'root'
+    src:                '/usr/local/python-packages/flexget'
+    dest:               '/usr/local/python-packages/transmission-rpc'
 create_files:
   - path:               '/var/lib/transmission-daemon/.flexget'
     state:              'directory'
@@ -107,3 +111,5 @@ install_files:
     mode:               '0644'
     src:                '../../../sensitive-ansible/roles/flexget/files/cron.d/flexget_failed_clear'
     dest:               '/etc/cron.d/flexget_failed_clear'
+commands:
+  - command:            /usr/local/bin/update_python_packages
