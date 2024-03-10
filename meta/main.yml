@@ -1,0 +1,8 @@
+---
+dependencies:
+  - role:     'transmission'
+    tags:     
+      - 'dependency'
+  - role:     'python'
+    tags:     
+      - 'dependency'
