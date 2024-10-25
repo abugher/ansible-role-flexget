@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Python dependencies get unhappy during update, so obtain update lock to avoid
+# running concurrent with update process.  Flexget tries to do its own locking,
+# but often leaves an orphan lock file, then refuses to start.  If update lock
+# is obtained, remove the flexget lock file.
+flock -n -E 0 /tmp/update_debian.lock -c "
+  echo $$ > /tmp/update_debian.lock 
+  ps -lfp $$ >> /tmp/update_debian.lock 
+  rm /var/lib/transmission-daemon/.flexget/.config-lock
+  /usr/local/bin/flexget_execute_now
+"
+# Removing the update lock file, before or after unlocking, breaks flock's
+# expectations.  Just leave it.

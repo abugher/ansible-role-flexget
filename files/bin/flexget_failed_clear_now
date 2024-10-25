@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# DISTRIBUTED BY ANSIBLE
+
+# Some time today.
+#/bin/sleep $(( $RANDOM % ( 60 * 24 ) ))m
+
+# Python dependencies get unhappy during update.
+flock /tmp/update_debian.lock -c "
+  echo $$ > /tmp/update_debian.lock
+  ps -lfp $$ >> /tmp/update_debian.lock
+  /usr/local/bin/flexget failed clear > /var/log/flexget_failed_clear.log 2>&1
+  echo $? > /var/log/flexget_failed_clear.ret
+"
+rm /tmp/update_debian.lock
