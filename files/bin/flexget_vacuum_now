@@ -1,14 +1,30 @@
 #!/bin/bash
 
-# DISTRIBUTED BY ANSIBLE
+export lock_file='/tmp/update_debian.lock'
+export log_tag="${0##*/} (${$})"
+export log="logger -t '${log_tag}'"
 
 #/bin/sleep $(( $RANDOM % ( 60 * 24 ) ))m
 
+$log "Acquiring lock."
+
 # Python dependencies get unhappy during update.
-flock /tmp/update_debian.lock -c "
+if ! flock /tmp/update_debian.lock -c '
   echo $$ > /tmp/update_debian.lock
   ps -lfp $$ >> /tmp/update_debian.lock
   /usr/local/bin/flexget database vacuum > /var/log/flexget_vacuum.log 2>&1
   echo $? > /var/log/flexget_vacuum.ret
-"
-rm /tmp/update_debian.lock
+'; then
+  ret="${?}"
+  $log "Lock held by PID:  $(
+    head -n 1 "${lock_file}"
+  )"
+  $log "$(
+    tail -n 1 "${lock_file}"
+  )"
+fi
+
+$log "Lock released.  flock return status:  ${?}"
+
+# Removing the lock file, before or after unlocking, breaks flock's
+# expectations.  Just leave it.
