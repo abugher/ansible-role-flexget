@@ -10,7 +10,7 @@ export log="logger -t '${log_tag}'"
 $log "Acquiring lock."
 
 # Python dependencies get unhappy during update.
-if ! flock "${lock_file}" -c '
+if ! flock -n "${lock_file}" -c '
   echo $$ > "${lock_file}"
   ps -lfp $$ >> "${lock_file}"
   /usr/local/bin/flexget failed clear > /var/log/flexget_failed_clear.log 2>&1
