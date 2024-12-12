@@ -2,11 +2,17 @@
 
 export lock_file='/tmp/update_debian.lock'
 export log_tag="${0##*/} (${$})"
-export log="logger -t '${log_tag}'"
+export log_early="/tmp/${log_tag}.early.log"
+
+
+function log() {
+  echo "${1}" >> "${log_early}"
+}
+
 
 #/bin/sleep $(( $RANDOM % ( 60 * 24 ) ))m
 
-$log "Acquiring lock."
+log "Acquiring lock."
 
 # Python dependencies get unhappy during update.
 if ! flock -n /tmp/update_debian.lock -c '
@@ -16,15 +22,15 @@ if ! flock -n /tmp/update_debian.lock -c '
   echo $? > /var/log/flexget_vacuum.ret
 '; then
   ret="${?}"
-  $log "Lock held by PID:  $(
+  log "Lock held by PID:  $(
     head -n 1 "${lock_file}"
   )"
-  $log "$(
+  log "$(
     tail -n 1 "${lock_file}"
   )"
 fi
 
-$log "Lock released.  flock return status:  ${?}"
+log "Lock released.  flock return status:  ${?}"
 
 # Removing the lock file, before or after unlocking, breaks flock's
 # expectations.  Just leave it.

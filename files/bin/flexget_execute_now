@@ -2,13 +2,21 @@
 
 export lock_file='/tmp/update_debian.lock'
 export log_tag="${0##*/} (${$})"
-export log="logger -t '${log_tag}'"
+export log_early="/tmp/${log_tag}.early.log"
+
+
+function log() {
+  echo "${1}" >> "${log_early}"
+}
+
+
+log "$(date --iso-8601=second)"
 
 # Just skip it unless transmission is running.
 if /usr/sbin/service transmission-daemon status >/dev/null 2>&1; then
   # Python dependencies get unhappy during update, so obtain update lock to
   # avoid running concurrent with update process.  
-  $log "Acquiring lock."
+  log "Acquiring lock."
   if ! flock -n "${lock_file}" -c '
     echo $$ > "${lock_file}"
     ps -lfp $$ >> "${lock_file}"
@@ -21,20 +29,21 @@ if /usr/sbin/service transmission-daemon status >/dev/null 2>&1; then
     /usr/local/bin/flexget execute >> /var/log/flexget_execute.log 2>&1
     echo "${?}" > /var/log/flexget_execute.ret
     date --iso-8601=seconds >> /var/log/flexget_execute.log 2>&1
-  else
-    echo "Error:  Transmission is not running." > /var/log/flexget_execute.log
-    echo 1 > /var/log/flexget_execute.ret
-'; then
-  ret="${?}"
-  $log "Lock held by PID:  $(
-    head -n 1 "${lock_file}"
-  )"
-  $log "$(
-    tail -n 1 "${lock_file}"
-  )"
+  '; then
+    ret="${?}"
+    log "Lock held by PID:  $(
+      head -n 1 "${lock_file}"
+    )"
+    log "$(
+      tail -n 1 "${lock_file}"
+    )"
+  fi
+  log "Lock released.  flock return status:  ${?}"
+else
+  log "Error:  Transmission is not running." > /var/log/flexget_execute.log
 fi
 
-$log "Lock released.  flock return status:  ${?}"
+log "$(date --iso-8601=second)"
 
 # Removing the lock file, before or after unlocking, breaks flock's
 # expectations.  Just leave it.
