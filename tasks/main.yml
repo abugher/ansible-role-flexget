@@ -6,5 +6,6 @@
 - include_tasks:        '../tasks/symlinks.yml'
 - include_tasks:        '../tasks/create_files.yml'
 - include_tasks:        '../tasks/install_files.yml'
+- include_tasks:        '../tasks/template_files.yml'
 - include_tasks:        '../tasks/commands.yml'
   when:                 symlinks_result.changed
