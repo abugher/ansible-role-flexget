@@ -1,7 +1,5 @@
 ---
 - include_tasks:        '../tasks/install_packages.yml'
-# Workaround provided for bug:  https://github.com/Flexget/Flexget/issues/3905
-- include_tasks:        'tasks/pendulum-wheels.yml'
 - include_tasks:        '../tasks/install_python_packages.yml'
 - include_tasks:        '../tasks/symlinks.yml'
 - include_tasks:        '../tasks/create_files.yml'
