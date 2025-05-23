@@ -3,28 +3,30 @@
 export lock_file='/tmp/update_debian.lock'
 export log_tag="${0##*/} (${$})"
 export log_early="/tmp/${log_tag}.early.log"
+export pid_file='/tmp/flexget_execute.pid'
 
 
+# Use this to debug.  Skip making all these files, otherwise.
 function log() {
   echo "${1}" >> "${log_early}"
 }
 
 
-log "$(date --iso-8601=second)"
+#log "$(date --iso-8601=second)"
 
 # Just skip it unless transmission is running.
 if /usr/sbin/service transmission-daemon status >/dev/null 2>&1; then
   # Python dependencies get unhappy during update, so obtain update lock to
   # avoid running concurrent with update process.  
-  log "Acquiring lock."
+  #log "Acquiring lock."
   if ! flock -n "${lock_file}" -c '
-    echo $$ > "${lock_file}"
-    ps -lfp $$ >> "${lock_file}"
+    echo $$ > "${pid_file}"
+    ps -lfp $$ >> "${pid_file}"
     date --iso-8601=seconds > /var/log/flexget_execute.log 2>&1
     # Flexget tries to do its own locking, but often leaves an orphan lock
     # file, then refuses to start.  If update lock is obtained, remove the
     # flexget lock file.
-    rm /var/lib/transmission-daemon/.flexget/.config-lock
+    rm -f /var/lib/transmission-daemon/.flexget/.config-lock
     # Do not use --cron.  It suppresses all the output I want to log.
     /usr/local/bin/flexget execute >> /var/log/flexget_execute.log 2>&1
     echo "${?}" > /var/log/flexget_execute.ret
@@ -32,18 +34,18 @@ if /usr/sbin/service transmission-daemon status >/dev/null 2>&1; then
   '; then
     ret="${?}"
     log "Lock held by PID:  $(
-      head -n 1 "${lock_file}"
+      head -n 1 "${pid_file}"
     )"
     log "$(
-      tail -n 1 "${lock_file}"
+      tail -n 1 "${pid_file}"
     )"
   fi
-  log "Lock released.  flock return status:  ${?}"
+  #log "Lock released.  flock return status:  ${?}"
 else
-  log "Error:  Transmission is not running." > /var/log/flexget_execute.log
+  echo "Error:  Transmission is not running." > /var/log/flexget_execute.log
 fi
 
-log "$(date --iso-8601=second)"
+#log "$(date --iso-8601=second)"
 
 # Removing the lock file, before or after unlocking, breaks flock's
 # expectations.  Just leave it.
