@@ -1,0 +1,7 @@
+# 'flexget execute'
+
+# m     h       dom     mon     dow     user    command
+00      *       *       *       *       debian-transmission     /usr/local/bin/flexget_execute_cronjob
+15      *       *       *       *       debian-transmission     /usr/local/bin/flexget_execute_cronjob
+30      *       *       *       *       debian-transmission     /usr/local/bin/flexget_execute_cronjob
+45      *       *       *       *       debian-transmission     /usr/local/bin/flexget_execute_cronjob

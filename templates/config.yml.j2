@@ -1,0 +1,78 @@
+# http://flexget.com/wiki/Configuration
+
+templates:
+
+  series__all_shows:
+    series:
+      settings:
+        all_shows:
+          timeframe:            12 hours
+          target:               720p-2160p
+          upgrade:              True
+      all_shows:
+{% for show in all_shows %}
+        - "{{ show }}"
+{% endfor %}
+
+  series__piratebay:
+    series:
+      settings:
+        all_shows:
+          timeframe:            12 hours
+          target:               720p-2160p
+          upgrade:              True
+      # [] represents an empty list.
+      piratebay:                []
+
+  series__night_vale:
+    series:
+      - Welcome to Night Vale:
+          identified_by:        'sequence'
+    regexp:
+      accept:
+        - '^[0-9]+ - '
+    set:
+      path:                     '/storage/bittorrent/content/nightvale/'
+      filename:                 "{{ "{" }}{ title }}.mp3"
+    download:                   True
+
+  output__transmission:
+    transmission:
+      host:                     localhost
+      port:                     9091
+      username:                 transmission
+      password:                 {{ rpc_password }}
+
+
+tasks:
+
+  # Try to get everything from the most reliable sources.
+  try_best:
+    inputs:
+{% for rss_feed in best_rss_feeds %}
+      - rss:                    "{{ rss_feed }}"
+{% endfor %}
+    template:   
+      - series__all_shows
+      - output__transmission
+
+  # Try to get everything from moderately reliable sources.
+  try_middle:
+    inputs:
+      - rss:                    "{{ eztv_torrent_feed }}"
+    template:
+      - series__all_shows
+      - output__transmission
+
+  # Try to get select things from unreliable sources.
+  try_worst:
+    inputs:
+      - rss:                    "{{ piratebay_rss_feed }}"
+    template:
+      - series__piratebay
+      - output__transmission
+
+  nightvale_from_nightvale:
+    rss:
+      url:                      "{{ nightvale_rss_feed }}"
+    template:                   series__night_vale
