@@ -1,9 +1,5 @@
 ---
 install_packages:
-#  - 'gcc'
-#  - 'g++'
-#  - 'libc6-dev'
-#  - 'python3-dev'
   - 'cargo'
   - 'python3-dev'
   - 'libffi-dev'
