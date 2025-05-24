@@ -72,6 +72,19 @@ templates:
 
 
 tasks:
+  
+  # Query transmission.  Hand selected entries back to transmission.  Nothing
+  # new should download, but the entries should be marked as seen.
+  check_library:
+    inputs:
+      - from_transmission:
+          host:                 localhost
+          port:                 9091
+          username:             transmission
+          password:             {{ rpc_password }}
+    template:
+      - series__all_shows
+      - output__transmission
 
   try_best:
     inputs:
