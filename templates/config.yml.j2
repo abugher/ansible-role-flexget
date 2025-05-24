@@ -1,5 +1,31 @@
 # http://flexget.com/wiki/Configuration
 
+# Glossary - Refer to the documentation linked above for full explanations.
+# See below for how this file deals with these concepts.
+#
+#   - entries 
+#       Each entry contains either an episode of content or a reference to
+#       obtain an episode of content, typically a torrent file.  Entries are
+#       not defined in this file or explicitly referenced, but handling them
+#       correctly is the point of this exercise.
+#   - series 
+#       Each series definition contains the name of a content series.  Each
+#       series definition can also specify filters for selecting entries.
+#   - inputs 
+#       Each input should contain a URL or other mechanism that, when queried,
+#       produces a list of entries.
+#   - outputs 
+#       Each output defines how to download an episode of content contained or
+#       referenced by an entry.
+#   - templates 
+#       Each template defines a set of series or a set of outputs.  (Inputs
+#       tend to be defined within task definitions.)
+#   - tasks
+#       Each task indicates, often through reference to templates, a set of
+#       inputs to query, a set of series to look for, and at least one output
+#       to receive selected entries.
+
+
 templates:
 
   series__all_shows:
