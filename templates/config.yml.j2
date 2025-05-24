@@ -60,6 +60,11 @@ templates:
         - '^[0-9]+ - '
     set:
       path:                     '/storage/bittorrent/content/nightvale/'
+{#  
+  title should be dereferenced by flexget during execution, not by ansible
+  during deployment.  This looks weird but accomplishes that.  (jinja2 comments
+  are also weird.  Keep the open/close punctuation aligned left.)
+#}
       filename:                 "{{ "{" }}{ title }}.mp3"
     download:                   True
 
