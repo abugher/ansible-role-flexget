@@ -29,37 +29,40 @@
 templates:
 
   # finds torrent entries from RSS or HTML feed(s)
-  series__all_shows:
+  series__all_series:
     series:
       settings:
-        all_shows:
+        all_series:
           timeframe:            12 hours
           target:               720p-2160p
           upgrade:              True
-      all_shows:
-{% for show in all_shows %}
-        - "{{ show }}"
+      all_series:
+{% for series in all_series %}
+        - "{{ series }}"
 {% endfor %}
 
-  series__piratebay:
+  series__unpopular_series:
     series:
       settings:
-        all_shows:
+        all_series:
           timeframe:            12 hours
           target:               720p-2160p
           upgrade:              True
       # [] represents an empty list.
-      piratebay:                []
+      unpopular_series:                []
 
-  series__night_vale:
+  series__direct_download:
     series:
-      - Welcome to Night Vale:
+{% for series in direct_download_series %}
+      
+{% endfor %}
+      - "{{ series }}":
           identified_by:        'sequence'
     regexp:
       accept:
         - '^[0-9]+ - '
     set:
-      path:                     '/storage/bittorrent/content/nightvale/'
+      path:                     "{{ direct_download_path }}"
 {#  
   title should be dereferenced by flexget during execution, not by ansible
   during deployment.  This looks weird but accomplishes that.  (jinja2 comments
@@ -88,7 +91,7 @@ tasks:
           username:             transmission
           password:             {{ rpc_password }}
     template:
-      - series__all_shows
+      - series__all_series
       - output__transmission
 
   try_best:
@@ -97,24 +100,24 @@ tasks:
       - rss:                    "{{ rss_feed }}"
 {% endfor %}
     template:   
-      - series__all_shows
+      - series__all_series
       - output__transmission
 
   try_middle:
     inputs:
       - rss:                    "{{ eztv_torrent_feed }}"
     template:
-      - series__all_shows
+      - series__all_series
       - output__transmission
 
   try_worst:
     inputs:
-      - rss:                    "{{ piratebay_rss_feed }}"
+      - rss:                    "{{ unpopular_series_rss_feed }}"
     template:
-      - series__piratebay
+      - series__unpopular_series
       - output__transmission
 
   nightvale_from_nightvale:
     rss:
       url:                      "{{ nightvale_rss_feed }}"
-    template:                   series__night_vale
+    template:                   series__direct_download
