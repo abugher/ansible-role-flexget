@@ -28,6 +28,7 @@
 
 templates:
 
+  # finds torrent entries from RSS or HTML feed(s)
   series__all_shows:
     series:
       settings:
@@ -72,7 +73,6 @@ templates:
 
 tasks:
 
-  # Try to get everything from the most reliable sources.
   try_best:
     inputs:
 {% for rss_feed in best_rss_feeds %}
@@ -82,7 +82,6 @@ tasks:
       - series__all_shows
       - output__transmission
 
-  # Try to get everything from moderately reliable sources.
   try_middle:
     inputs:
       - rss:                    "{{ eztv_torrent_feed }}"
@@ -90,7 +89,6 @@ tasks:
       - series__all_shows
       - output__transmission
 
-  # Try to get select things from unreliable sources.
   try_worst:
     inputs:
       - rss:                    "{{ piratebay_rss_feed }}"
