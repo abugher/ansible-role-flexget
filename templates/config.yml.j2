@@ -54,9 +54,8 @@ templates:
   series__direct_download:
     series:
 {% for series in direct_download_series %}
-      
-{% endfor %}
       - "{{ series }}":
+{% endfor %}
           identified_by:        'sequence'
     regexp:
       accept:
@@ -105,19 +104,25 @@ tasks:
 
   try_middle:
     inputs:
-      - rss:                    "{{ eztv_torrent_feed }}"
+{% for rss_feed in middle_rss_feeds %}
+      - rss:                    "{{ rss_feed }}"
+{% endfor %}
     template:
       - series__all_series
       - output__transmission
 
   try_worst:
     inputs:
-      - rss:                    "{{ unpopular_series_rss_feed }}"
+{% for rss_feed in worst_rss_feeds %}
+      - rss:                    "{{ rss_feed }}"
+{% endfor %}
     template:
       - series__unpopular_series
       - output__transmission
 
-  nightvale_from_nightvale:
+  check_direct_downloads:
     rss:
-      url:                      "{{ nightvale_rss_feed }}"
+{% for rss_feed in direct_download_rss_feeds %}
+      url:                      "{{ rss_feed }}"
+{% endfor %}
     template:                   series__direct_download
